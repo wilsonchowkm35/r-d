@@ -1,0 +1,20 @@
+{
+	"editable": true,
+	"schema": {
+		"code": {
+			"type": "string",
+			"required": true,
+			"display": "Code"
+		},
+		"name": {
+			"type": "string",
+			"required": true,
+			"display": "Bank Name"
+		},
+		"status": {
+			"type": "boolean",
+			"default": true,
+			"display": "Status"
+		}
+	}
+}

@@ -1,6 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { ApiService } from './services/api.service';
 
 import { Hero } from './models/Hero';
+
+//import { Bank } from './schema/bank.json'
+
+//let Bank = require('../schema/bank.json')
+
+//import { ApiService } from './components/api.service';
 
 /*export class Hero {
 	id: number;
@@ -15,6 +23,7 @@ const HEROS: Hero[] = [
 
 @Component({
       selector: 'my-app',
+      providers: [ApiService],
       styles: [`
 		  .selected {
 		    background-color: #CFD8DC !important;
@@ -66,13 +75,13 @@ const HEROS: Hero[] = [
 		`],
       template: `
       <h2>My Heros</h2>
-      <ul class="heroes">
+      <ul class="heroes" *ngIf="isLogin">
       	<li *ngFor="let hero of heroes"
       	[class.selected]="hero === selectedHero"
       	(click)="onSelect(hero)">
       		<span class="badge">{{ hero.id }}</span> {{hero.name}}
       	</li>
-      </ul>
+      </ul>      
       <div *ngIf="selectedHero">
       	<h2>{{selectedHero.name}} details!</h2>
 		<div><label>id: </label>{{selectedHero.id}}</div>
@@ -89,20 +98,40 @@ const HEROS: Hero[] = [
       	<input [(ngModel)]="hero.name" placeholder="name" >
       </div>   
 -->   
+		<hr />
+ 		<list [type]="type" [apiCall]="apiCall"></list>
+      	<a routerLink="/list">List Heroes</a>
+	   <router-outlet></router-outlet>
       `
 })
 
-export class AppComponent { 
-	title = 'Tour of Heroes';
+export class AppComponent implements OnInit { 
+
+	constructor(private apiService: ApiService) { }
+ 	title = 'Tour of Heroes';
+ 	type = "list-type";
+ 	apiCall = "api-call";
 	heroes = HEROS;
 	hero: Hero = {
 		id: 1, 
 		name: 'Windstorm2'
 	};
 	selectedHero: Hero;
+	ready: Boolean;
+	isLogin: Boolean;
+
+	ngOnInit(): void {
+		console.log("ng on init")
+		let that = this
+		console.log(this.heroes)
+		for (let key in this.heroes[0])
+			console.log(key)
+		this.apiService.doLogin().then(val => that.isLogin = val);
+ 	};
+
 	onSelect(hero: Hero): void {
 		//console.log("Here", hero)
 		this.selectedHero = hero
-	}
+	};
 }
 
