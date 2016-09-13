@@ -1,19 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 import { ApiService } from './services/api.service';
 
 import { Hero } from './models/Hero';
-
-//import { Bank } from './schema/bank.json'
-
-//let Bank = require('../schema/bank.json')
-
-//import { ApiService } from './components/api.service';
-
-/*export class Hero {
-	id: number;
-	name: string;
-}*/
 
 const HEROS: Hero[] = [
 	{ id: 11, name: 'Mr. Chow' },
@@ -22,92 +13,77 @@ const HEROS: Hero[] = [
 ]
 
 @Component({
-      selector: 'my-app',
-      providers: [ApiService],
-      styles: [`
-		  .selected {
-		    background-color: #CFD8DC !important;
-		    color: white;
-		  }
-		  .heroes {
-		    margin: 0 0 2em 0;
-		    list-style-type: none;
-		    padding: 0;
-		    width: 15em;
-		  }
-		  .heroes li {
-		    cursor: pointer;
-		    position: relative;
-		    left: 0;
-		    background-color: #EEE;
-		    margin: .5em;
-		    padding: .3em 0;
-		    height: 1.6em;
-		    border-radius: 4px;
-		  }
-		  .heroes li.selected:hover {
-		    background-color: #BBD8DC !important;
-		    color: white;
-		  }
-		  .heroes li:hover {
-		    color: #607D8B;
-		    background-color: #DDD;
-		    left: .1em;
-		  }
-		  .heroes .text {
-		    position: relative;
-		    top: -3px;
-		  }
-		  .heroes .badge {
-		    display: inline-block;
-		    font-size: small;
-		    color: white;
-		    padding: 0.8em 0.7em 0 0.7em;
-		    background-color: #607D8B;
-		    line-height: 1em;
-		    position: relative;
-		    left: -1px;
-		    top: -4px;
-		    height: 1.8em;
-		    margin-right: .8em;
-		    border-radius: 4px 0 0 4px;
-		  }
-		`],
-      template: `
-      <h2>My Heros</h2>
-      <ul class="heroes" *ngIf="isLogin">
-      	<li *ngFor="let hero of heroes"
-      	[class.selected]="hero === selectedHero"
-      	(click)="onSelect(hero)">
-      		<span class="badge">{{ hero.id }}</span> {{hero.name}}
-      	</li>
-      </ul>      
-      <div *ngIf="selectedHero">
-      	<h2>{{selectedHero.name}} details!</h2>
-		<div><label>id: </label>{{selectedHero.id}}</div>
-		<div>
-		    <label>name: </label>
-		    <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+	selector: 'my-app',
+	providers: [ApiService],
+	styles: [`
+		.wrapper { margin: 0 auto; padding: 20px; }
+	`],
+	template: `
+		<div class="wrapper">
+		<h1>{{ site.title }}</h1>
+		<!-- main navigation -->
+		<div class="ui secondary pointing menu blue">
+	  		<a class="item" *ngFor="let nav of site.main_nav" routerLink="{{ nav.url }}" routerLinkActive="active">{{ nav.name }}</a>
+			<div class="right menu">
+				<a class="ui item">Logout</a>
+	  		</div>
 		</div>
+		<div class="ui segment">
+	  		<router-outlet></router-outlet>
+		</div>
+<!--
+      <div class="nav" *ngFor="let nav of site.main_nav">
+      	<a routerLink="{{ nav.url }}" class="nav-item" routerLinkActive="active">{{ nav.name }}</a>
       </div>
-<!--      <h1>{{title}}</h1>
-      <h2>{{hero.name}} details!</h2>
-      <div><label>id: </label>{{hero.id}}</div>
-      <div>
-      	<label>name: </label>
-      	<input [(ngModel)]="hero.name" placeholder="name" >
-      </div>   
--->   
-		<hr />
- 		<list [type]="type" [apiCall]="apiCall"></list>
-      	<a routerLink="/list">List Heroes</a>
-	   <router-outlet></router-outlet>
+      <ul class="nav" >
+      	<li class="menu" *ngFor="let nav of site.main_nav"
+      	routerLinkActive="active"
+      	(click)="goNav(nav)"
+      	>
+      	{{ nav.name }}
+      	</li>
+      </ul>
+      -->		
+		</div>		
       `
 })
 
 export class AppComponent implements OnInit { 
 
-	constructor(private apiService: ApiService) { }
+	constructor(private route: Router,
+		private apiService: ApiService) { }
+	site = {
+		title: 'Credit Card Administration',
+		main_nav: [
+			/*{
+				url: '#',
+				name: 'Configuration',
+				items: [
+					{
+						url: '/list/bank',
+						name: 'Bank'
+					}
+				],
+				status: false
+			},*/
+			{
+				url: '/dashboard',
+				name: 'Dashboard'
+			},
+			{
+				url: '/list/cards',
+				name: 'Cards'
+			},
+			{
+				url: '/list/restaurants',
+				name: 'Restaurants'
+			},
+			{
+				url: '/list/reward-card',
+				name: 'Reward Cards'
+			}
+		]
+	}
  	title = 'Tour of Heroes';
  	type = "list-type";
  	apiCall = "api-call";
@@ -116,9 +92,11 @@ export class AppComponent implements OnInit {
 		id: 1, 
 		name: 'Windstorm2'
 	};
+	currentNav: any;
 	selectedHero: Hero;
 	ready: Boolean;
 	isLogin: Boolean;
+
 
 	ngOnInit(): void {
 		console.log("ng on init")
@@ -128,6 +106,14 @@ export class AppComponent implements OnInit {
 			console.log(key)
 		this.apiService.doLogin().then(val => that.isLogin = val);
  	};
+
+ 	goNav(nav: any): void {
+ 		this.currentNav = nav;
+ 		let link = [nav.url];
+ 		 		console.log("goNav", link)
+
+ 		this.route.navigate(link);
+ 	}
 
 	onSelect(hero: Hero): void {
 		//console.log("Here", hero)

@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, ngOnChanges } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+
+import { ApiService } from '../services/api.service';
 
 import { List } from '../models/list';
 import { Listitem } from '../models/listitem';
@@ -7,7 +10,24 @@ import { Listitem } from '../models/listitem';
 	selector: 'list',      
 	template: `
 	<div>
-		<h2>{{ title }} {{ type }} {{ apiCall }}</h2>
+		<h2>{{ title }}</h2>
+
+		<table class="ui blue table" *ngIf="list">
+		  <thead>
+		    <tr>
+		    <th *ngFor="let f of list.fields">{{ f }}</th>
+		  </tr></thead><tbody>		    
+		    <tr *ngFor="let item of list.data"
+			[class.selected]="item === selectedItem"
+ 	     	(click)="onSelect(item)"
+		    >
+		      	<td *ngFor="let f of list.fields">
+					{{ item[f] }}
+				</td>
+		    </tr>
+		  </tbody>
+		</table>
+<!--
 		<ul class="list-{{list.id}}>" *ngIf="list">
 			<li class="ui item" *ngFor="let item of list.data"
 			[class.selected]="item === selectedItem"
@@ -18,18 +38,16 @@ import { Listitem } from '../models/listitem';
 				</div>
 			</li>
 		</ul>	     	
+-->
 	</div>
   	`
 })
 
-export class ListComponent { 
+export class ListComponent implements OnInit, ngOnChanges { 
 	@Input()
 	type: string;
 
-	@Input()
-	apiCall: string;
-
-	title = 'List';
+	table: string;
 
 	fields: any[];
 
@@ -37,21 +55,41 @@ export class ListComponent {
 
 	selectedItem: Listitem;
 
+	title = '';
+
+	constructor(private apiservice: ApiService, 
+				private route: ActivatedRoute) {
+
+		console.log("list component: ", this.type)
+	}
+
 	onSelect(item: Listitem): void {
 		this.selectedItem = item
 	}
 
 	ngOnInit(): void {
-		console.log("list init")
 
-		// get list 
-		let rList: any[] = [
-			{ id: 11, name: 'Mr. Chow' },
-			{ id: 12, name: 'Miss Chau'},
-			{ id: 13, name: 'Cathering Fung'}
-		]
+		console.log("ListComponent onInit")
+/**
+		this.route.params.forEach((params: Params) => {
+			this.table = params['type'];
+			this.title = params['type'].toUpperCase() + ' LIST';
+		});
+*/
+		this.table = this.type
+		this.title = this.type.toUpperCase() + ' LIST';
 
-		this.list = new List('test', 'name', rList)
+		let that = this
+		this.apiservice.getCollections(this.table, '', 1, 20).then(function(data) {
+			console.log("cards: ", data)
+			that.list = new List('test', 'name', data)
+		})
+	}
+
+
+	ngOnChanges(changes: {[type: string]: SimpleChange}) {
+
+		console.log("ngOnChanges")
 	}
 
 }
