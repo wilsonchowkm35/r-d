@@ -14,6 +14,18 @@ export class ApiService {
 		return Promise.resolve(true);
 	};
 
+    /** 
+    get record data
+    */
+    getRecord(collection: string, id: string): Promise<any> {
+        let url = this.apiUrl+'detail/'+collection+'/'+id
+        console.log(url);
+        return this.http.get(url)
+                        .toPromise()
+                        .then(response => response.json().data as any[])
+                        .catch(this.errorHandler);
+    }
+
 	/**
 	get raw collections list 	
 	*/

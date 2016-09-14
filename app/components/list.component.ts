@@ -1,5 +1,7 @@
-import { Component, Input, OnInit, ngOnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Router }              from '@angular/router';
+
 
 import { ApiService } from '../services/api.service';
 
@@ -43,7 +45,7 @@ import { Listitem } from '../models/listitem';
   	`
 })
 
-export class ListComponent implements OnInit, ngOnChanges { 
+export class ListComponent implements OnInit, OnChanges { 
 	@Input()
 	type: string;
 
@@ -58,13 +60,15 @@ export class ListComponent implements OnInit, ngOnChanges {
 	title = '';
 
 	constructor(private apiservice: ApiService, 
-				private route: ActivatedRoute) {
+				private route: ActivatedRoute,
+                private router: Router) {
 
 		console.log("list component: ", this.type)
 	}
 
 	onSelect(item: Listitem): void {
 		this.selectedItem = item
+        this.router.navigate(['/detail', this.type, item._id]);
 	}
 
 	ngOnInit(): void {
@@ -86,11 +90,13 @@ export class ListComponent implements OnInit, ngOnChanges {
 		})
 	}
 
+    ngOnChanges(): void {
+        console.log("on changes") 
+    }
+	//ngOnChanges(changes: {[type: string]: SimpleChange}) {
 
-	ngOnChanges(changes: {[type: string]: SimpleChange}) {
-
-		console.log("ngOnChanges")
-	}
+	//	console.log("ngOnChanges")
+	//}
 
 }
 

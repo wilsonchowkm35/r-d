@@ -9,12 +9,14 @@ import { CardsComponent } from './components/cards.component';
 import { RewardCardsComponent } from './components/rewardcards.component';
 import { RestaurantsComponent } from './components/restaurants.component';
 
+import { DetailComponent } from './components/detail.component';
+
 const appRoutes: Routes = [
-{
+  { 
 	path: '',
 	redirectTo: '/dashboard',
 	pathMatch: 'full'
-},
+  },
   {
   	path: 'dashboard',
   	component: DashboardComponent
@@ -27,13 +29,13 @@ const appRoutes: Routes = [
     path: 'list/restaurants',
     component: RestaurantsComponent
   },
-{
+  {
     path: 'list/reward-card',
     component: RewardCardsComponent
-  },  
+  }, 
   {
     path: 'detail/:type/:id',
-    component: ListComponent
+    component: DetailComponent
   }
 ];
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ngOnChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { ListComponent } from './list.component';
 
@@ -11,4 +11,7 @@ import { ListComponent } from './list.component';
 
 export class CardsComponent implements OnInit {
 	type = 'cards'
+
+    ngOnInit(): void {
+    }
 }

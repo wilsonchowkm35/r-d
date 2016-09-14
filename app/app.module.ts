@@ -18,6 +18,8 @@ import { CardsComponent } from './components/cards.component';
 import { RestaurantsComponent } from './components/restaurants.component';
 import { RewardCardsComponent } from './components/rewardcards.component';
 
+import { DetailComponent } from './components/detail.component';
+
 @NgModule({
 	imports: [ 
 		BrowserModule, 
@@ -32,7 +34,8 @@ import { RewardCardsComponent } from './components/rewardcards.component';
 		DashboardComponent,
 		CardsComponent,
 		RestaurantsComponent,
-		RewardCardsComponent
+		RewardCardsComponent,
+        DetailComponent
 	],
 	bootstrap:    [ AppComponent ]
 })
